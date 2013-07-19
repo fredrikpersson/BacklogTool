@@ -101,6 +101,8 @@ THE SOFTWARE.
         class="com.sonymobile.backlogtool.permission.AdminPermission">
     </beans:bean>
 
+    <beans:bean class="com.sonymobile.backlogtool.permission.AuthenticationSuccessListener" />
+
     <!-- Scanning -->
     <context:component-scan
         base-package="com.sonymobile.backlogtool, com.sonymobile.backlogtool.permission" />
