@@ -96,6 +96,20 @@ function deleteCookie(name) {
 }
 
 /**
+ * This method alternate the color of parent li's.
+ * For a readability purpose
+ */
+var addZebraStripesToParents = function() {
+    $("#list-container>li.zebra-stripes").removeClass("zebra-stripes");
+    $( "#list-container .parentLi" ).each(function(index) {
+        if (index % 2 == 0) {
+            $(this).addClass("zebra-stripes");
+            $(this).nextUntil(".parentLi").addClass("zebra-stripes");
+        }
+    });
+};
+
+/**
  * Checks if array a contains an object with same id as argument object
  * 
  * @param a
@@ -266,6 +280,8 @@ $(document).ready(function () {
             if (!disableEditsBoolean) {
                 enableEdits();
             }
+        } else {
+            $("#list-divider").hide();
         }
         var cookieStr = (dispArchived) ? "checked" : "unchecked";
         createCookie("backlogtool-disparchived", cookieStr, 60);
@@ -821,6 +837,18 @@ $(document).ready(function () {
     };
 
     /**
+     * The following click event handler unselects all items if the user presses
+     * outside both the li elements and the important parts of the header.
+     */
+    $(document).click(function(event) {
+        if ($(event.target).closest('li, a, input, button, select').length == 0) {
+            selectedItems = new Array();
+            $("ul > li.ui-selected").removeClass("ui-selected");
+            updateCookie();
+        }
+    });
+
+    /**
      * Gets the most recently selected item.
      * Optional argument is type specification ("child" or "parent").
      */
@@ -1082,7 +1110,7 @@ $(document).ready(function () {
         $("#deleteDescription").html("Are you sure you want to delete this " + item + "?");
         $('#delete-item').dialog({
             resizable: false,
-            height:180,
+            minHeight: 0,
             modal: true,
             buttons: {
                 Delete: function() {
@@ -1338,6 +1366,7 @@ $(document).ready(function () {
                                 $('#archived-list-container > [parentId="'+storyId+'"]').appendTo('#list-container');
                             }
                             exitEditMode(storyId);
+                            addZebraStripesToParents();
                         });
                     } else {
                         exitEditMode(storyId);
@@ -1554,6 +1583,7 @@ $(document).ready(function () {
                                 $('#archived-list-container > [parentId="'+epicId+'"]').appendTo('#list-container');
                             }
                             exitEditMode(epicId);
+                            addZebraStripesToParents();
                         });
                     } else {
                         exitEditMode(epicId);
@@ -1689,6 +1719,7 @@ $(document).ready(function () {
                             $('#archived-list-container > [parentId="'+themeId+'"]').appendTo('#list-container');
                         }
                         exitEditMode(themeId);
+                        addZebraStripesToParents();
                     });
                 } else {
                     exitEditMode(themeId);
@@ -1775,7 +1806,7 @@ $(document).ready(function () {
                     + ' selected item(s) to ' + newArea + '?</p>');
             $(moveStoryDialog).dialog({
                 resizable : false,
-                height : 180,
+                minHeight : 0,
                 modal : true,
                 buttons : {
                     "Move stories" : function() {
@@ -1808,6 +1839,7 @@ $(document).ready(function () {
             noStoriesDialog.dialog({
                 modal: true,
                 width: 325,
+                minHeight: 0,
                 buttons: {
                     Ok: function() {
                         $( this ).dialog( "close" );
@@ -2247,6 +2279,7 @@ $(document).ready(function () {
      */
     buildVisibleList = function (archived) {
         if ($("#archived-checkbox").prop("checked")) {
+            $("#list-divider").show();
             $("#archived-list-container").append(generateList(true)).show();
         }
     	if (archived != true && !firstBuild) {
@@ -2383,6 +2416,7 @@ $(document).ready(function () {
             $("#list-container").sortable("option", "disabled", true);
         }
         firstBuild = false;
+        addZebraStripesToParents();
     };
 
     var setHeightAndMargin = function (value) {
@@ -2392,8 +2426,6 @@ $(document).ready(function () {
     $(window).resize(function() {
         setHeightAndMargin($("#header").height());
     });
-
-    setHeightAndMargin($("#header").height());
 
     /*
      * Changing the create parent button based on what view you're on
@@ -2656,5 +2688,7 @@ $(document).ready(function () {
         //   isShift = true;
         // }
     });
+
+    setHeightAndMargin($("#header").height());
 
 });
