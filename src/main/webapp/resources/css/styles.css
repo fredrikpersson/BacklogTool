@@ -759,8 +759,8 @@ p.addOptionSeries, p.addOption {
 .oneline-li {
     padding-top: 2px;
     padding-bottom: 4px;
-    border: 0;
-    background: none;
+/*     border: 0; */
+/*     background: none; */
 }
 
 .oneline.date-text {
